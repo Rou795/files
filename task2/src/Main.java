@@ -46,10 +46,6 @@ public class Main {
                 } catch (Exception ex) {
                     System.out.println(ex.getMessage());
                 }
-                if (result) {
-                    File file = new File(fileName);
-                    file.delete();
-                }
             }
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
@@ -82,12 +78,18 @@ public class Main {
     }
 
     public static void main(String[] args) {
+
+// Входные данные
+
         String saveRoot = "C:\\Users\\ALFA\\Desktop\\Games\\savegames";
         GameProgress first = new GameProgress(100, 5, 10, 9.5);
         GameProgress second = new GameProgress(90, 10, 17, 0.5);
         GameProgress third = new GameProgress(50, 7, 5, 19.5);
         GameProgress[] progressArr = {first, second, third};
         String[] fileNames = {"\\save1.dat", "\\save2.dat", "\\save3.dat"};
+
+// Реализация создания сохранений
+
         for (int i = 0; i < fileNames.length; i++) {
             if (saveGame(saveRoot + fileNames[i], progressArr[i])) {
                 System.out.println("Saved.");
@@ -97,8 +99,21 @@ public class Main {
             fileNames[i] = saveRoot + fileNames[i];
         }
 
-        zipFiles(saveRoot + "\\zip.zip", fileNames);
+// Удаление фалов сохранений после получения ответа об успешной архивации
+
+        if (zipFiles(saveRoot + "\\zip.zip", fileNames)) {
+            for (String fileName : fileNames) {
+                File file = new File(fileName);
+                file.delete();
+            }
+        }
+
+// метод распаковки архива
+
         openZip(saveRoot + "\\zip.zip", saveRoot);
+
+// метод для десереализации сохранений
+
         System.out.println(openProgress(saveRoot + "\\save1.dat"));
         System.out.println(openProgress(saveRoot + "\\save2.dat"));
         System.out.println(openProgress(saveRoot + "\\save3.dat"));
